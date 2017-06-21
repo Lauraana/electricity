@@ -1,0 +1,2719 @@
+setwd("C:/Users/Laura/Documents/electricity")
+
+install.packages("foreign")
+library(foreign)
+mwfac <- read.spss("MWFC6JFLSR.SAV", to.data.frame = T)
+
+
+## Variable names
+  names(mwfac)
+  dim(mwfac)
+  # col: 1060   rows: 1627
+
+## Facility type distribution
+    table(mwfac$V007)
+
+## Missing values
+  table(mwfac$V007, is.na(mwfac$V120A))
+  # 1 Central hospital, 2 other hospital, 11 health centre, 1 maternity, 8 dispensary, 52 clinic, 8 health post
+
+## Connection to central grid, Reliability of central grid 
+  table(mwfac$V120A)
+
+## Connection to central grid by fac type, Reliability of central grid 
+  table(mwfac$V007,mwfac$V120A)
+
+## Bar diagram connection to central grid by fac type, Reliability of central grid 
+  prop.table(table(mwfac$V007,mwfac$V120A), 2)
+  install.packages("ggplot2")
+  library(ggplot2)
+  ggplot(test, aes(x = V120A)) + geom_bar(aes(fill = V007)) + 
+    theme(axis.text.x=element_text(angle = -45, hjust = 0))
+  x11()
+
+## Back-up with fuel or charged battery 
+  table(mwfac$V120A, mwfac$V120)
+
+## alternative calculation
+  table(mwfac$V120[mwfac$V120A!="Not connected"])
+  table(test$V120[test$V120A =="Not connected"])
+
+## other energy source
+
+## CS  
+  table(mwfac$V121D)
+  #no values
+
+## No other source
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120A)
+## Fuel-operated generator (only) 
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120A)
+## battery-operated generator (only) 
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120A)
+## Solar system (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No",mwfac$V120A)
+## CS (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="Yes",mwfac$V120A)
+## Fuel and battery
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No", mwfac$V120A)
+## Fuel and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No", mwfac$V120A)
+## Fuel and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="Yes", mwfac$V120A)
+## Battery and solar
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="No",mwfac$V120A)
+## Battery and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="Yes",mwfac$V120A)
+## solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes",mwfac$V120A)
+## Fuel, battery and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="No", mwfac$V120A)
+## Fuel, battery and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="Yes", mwfac$V120A)
+## Fuel, solar and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes", mwfac$V120A)
+## Battery, solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes",mwfac$V120A)
+## Fuel, battery, solar and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes", mwfac$V120A)
+
+
+## other energy source by facility
+
+## No other source
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## Fuel-operated generator (only) 
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## battery-operated generator (only) 
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## Solar system (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## CS (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="Yes" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## Fuel and battery
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## Fuel and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+## solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes" & mwfac$V120 !="Reported, don't know if functional", mwfac$V120A, mwfac$V007)
+
+## Back-up source by functionality
+
+## Fuel-operated generator (only) 
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120)
+## battery-operated generator (only) 
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120)
+## Solar system (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No",mwfac$V120)
+## CS (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="Yes",mwfac$V120)
+## Fuel and battery
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No", mwfac$V120)
+## Fuel and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No", mwfac$V120)
+## solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes",mwfac$V120)
+## Fuel, battery and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="No", mwfac$V120)
+## Fuel, battery and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="Yes", mwfac$V120)
+## Fuel, solar and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes", mwfac$V120)
+## Battery, solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes",mwfac$V120)
+## Fuel, battery, solar and CS
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes", mwfac$V120)
+
+  ## Back-up source by functionality if not connected
+  
+  ## Fuel-operated generator (only) 
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120, mwfac$V120A =="Not connected")
+  ## battery-operated generator (only) 
+  table(mwfac$V121A == "No" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No",mwfac$V120, mwfac$V120A =="Not connected")
+  ## CS (only)
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "No" & mwfac$V121D =="Yes",mwfac$V120, mwfac$V120A =="Not connected")
+  ## Fuel and battery
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "Yes" & mwfac$V121C == "No" & mwfac$V121D =="No", mwfac$V120, mwfac$V120A =="Not connected")
+  ## Fuel and solar
+  table(mwfac$V121A == "Yes" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No", mwfac$V120, mwfac$V120A =="Not connected")
+  ## solar and CS
+  table(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="Yes",mwfac$V120, mwfac$V120A =="Not connected")
+
+  
+# Variables energy
+
+# connected (without don´t know)
+  connected <- (mwfac$V120A !=  "Don't know if connected")
+  table(connected)
+
+# solar(only)
+  solar <- as.character(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No")
+  table(solar, mwfac$V120A)
+
+
+# Energy Categories 
+  
+  # 1: Reliable,  back-up
+  relback3 <- as.numeric(mwfac$V120A == "Connected, always available" & mwfac$V120 != "No backup generator") 
+  table(relback3)
+  
+  # 2: Sometimes interrupted, back-up
+  someinterback3 <- as.numeric(mwfac$V120A == "Connected, sometimes interrupted" & mwfac$V120 != "No backup generator")
+  table(someinterback3)
+  
+  
+  # 3: Reliable, no back-up
+  relnoback3 <- as.numeric(mwfac$V120A == "Connected, always available" & mwfac$V120 == "No backup generator")
+  table(relnoback3)
+  
+  
+  # 4: Sometimes interrupted, no back-up
+  someinternoback3 <- as.numeric(mwfac$V120A == "Connected, sometimes interrupted" & mwfac$V120 == "No backup generator")
+  table(someinternoback3)
+  
+  # 5: Not connected, off-grid
+  offgrid3 <- as.numeric(mwfac$V120A =="Not connected" & solar == "TRUE" | mwfac$V120A =="Not connected" & (mwfac$V120 == "Reported functional with fuel" | mwfac$V120 == "Reported functional, no fuel, DK fuel" | mwfac$V120 == "Reported not functional" | mwfac$V120 == "Reported, don't know if functional"))
+  table(offgrid3)  
+  
+  # 6: Not connected to electricity  
+  notconnected3 <- as.numeric(mwfac$V120A =="Not connected" & mwfac$V120 == "No backup generator" & solar == "FALSE")
+  table(notconnected3)
+  
+
+  # dataframe Category 
+  energycatframe3 <- data.frame(relback3, someinterback3, relnoback3, someinternoback3, offgrid3, notconnected3)
+  
+  energycatframe3$encate3[energycatframe3$relback3 == 1] <- "c1"
+  energycatframe3$encate3[energycatframe3$someinterback3 == 1] <- "c2"
+  energycatframe3$encate3[energycatframe3$relnoback3 == 1] <- "c3"
+  energycatframe3$encate3[energycatframe3$someinternoback3 == 1] <- "c4"
+  energycatframe3$encate3[energycatframe3$offgrid3 == 1] <- "c5"
+  energycatframe3$encate3[energycatframe3$notconnected3 == 1] <- "c6"
+  
+  energycatframe3$encate3 <- factor(energycatframe3$encate3)
+  table(energycatframe3$encate3, mwfac$V007)
+  
+   
+# Categories Fac. types: WHO
+
+ 
+  Referrallevel <- as.numeric(mwfac$V007 == "District Hospital" | mwfac$V007 == "Central Hospital")
+  Firstlevel <- as.numeric(mwfac$V007 == "Rural/Community Hospital" | mwfac$V007 == "Other Hospital" | mwfac$V007 == "Health Centre")
+  Communitylevel <- as.numeric(mwfac$V007 == "Maternity" | mwfac$V007 == "Dispensary" | mwfac$V007 == "Clinic" | mwfac$V007 == "Health Post")
+  
+  facilitycatwho <- data.frame(Referrallevel, Firstlevel, Communitylevel)
+  
+  facilitycatwho$facilitycategory[facilitycatwho$Referrallevel == 1] <- "Referral"
+  facilitycatwho$facilitycategory[facilitycatwho$Firstlevel == 1] <- "First"
+  facilitycatwho$facilitycategory[facilitycatwho$Communitylevel == 1] <- "Community"
+  
+  facilitycatwho$facilitycategory <- factor(facilitycatwho$facilitycategory)
+  table(facilitycatwho$facilitycategory)
+
+# Regions
+
+table(mwfac$V001, energycatframe3$encate3)
+table(mwfac$V001, energycatframe3$encate3, facilitycatwho$facilitycategory)
+
+  # more specific
+  table(mwfac$SFZONE)
+
+
+# urban-rural
+table(mwfac$V003, energycatframe3$encate3, facilitycatwho$facilitycategory)
+table(mwfac$V003, energycatframe3$encate3)
+
+
+#####################ENERGY USES
+
+#### LIGHTING
+
+### Lighting OP area
+#####
+      # Facility offers only inpatient
+      table(mwfac$V010B)
+      table(mwfac$V010B, mwfac$encate3)
+      
+      
+      # Lighting OPD: functioning vs. not functioning/dk if functioning (incl. observed and reported)
+      # General
+      table(facilitycatwho$facilitycategory, is.na(mwfac$V166I))
+      list(mwfac$V166I)
+      table(mwfac$V166I)
+      
+      notav <- as.numeric(mwfac$V166I == "Not available")
+      obsfunc <- as.numeric(mwfac$V166I == "Observed, functioning")
+      obsnotfunc <- as.numeric(mwfac$V166I == "Observed, not/DK if functioning")
+      repfunc <- as.numeric(mwfac$V166I == "Reported functioning") 
+      repnotfunc <- as.numeric(mwfac$V166I == "Reported, not/DK  if functioning")
+      
+      lightcatframe <- data.frame(notav, obsfunc, obsnotfunc, repfunc, repnotfunc)
+      
+      lightcatframe$licatopdfunc[lightcatframe$obsfunc == 1 | lightcatframe$repfunc == 1 ] <- 1
+      lightcatframe$licatopdfunc[lightcatframe$obsnotfunc == 1 | lightcatframe$repnotfunc == 1 | lightcatframe$notav == 1] <- 0
+      
+      table(lightcatframe$licatopdfunc, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Only outpatient    
+      table(lightcatframe$licatopdfunc, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V010B == "Outpatient")
+      
+      # available vs. not available
+      table(notav==1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(notav==1, energycatframe3$encate3, mwfac$V007)
+      
+      # functionality if lighting available
+      table(lightcatframe$licatopdfunc==0, energycatframe3$encate3, facilitycatwho$facilitycategory, notav!=1)
+      
+      # NA vs funct. vs not funct.
+      lightcatframe$licatopdnafunnon[lightcatframe$licatopdfunc == 0] <- "OP lighting not functional"
+      lightcatframe$licatopdnafunnon[lightcatframe$licatopdfunc == 1 & lightcatframe$notav != 1] <- "OP lighting functional"
+      lightcatframe$licatopdnafunnon[lightcatframe$licatopdfunc == 0 & lightcatframe$notav == 1] <- "OP lighting not available"
+      table(lightcatframe$licatopdnafunnon, energycatframe3$encate3)
+      
+      # Graph/descript
+      # Merge
+      lightcatframe$INV_ID <- mwfac$INV_ID
+      energycatframe3$INV_ID <- mwfac$INV_ID 
+      facilitycatwho$INV_ID <- mwfac$INV_ID
+
+      mwfac <- merge(lightcatframe, mwfac, by="INV_ID")
+      mwfac <- merge(facilitycatwho, mwfac, by="INV_ID")
+      
+      # Variables:
+      # Energy: mwfac$encate2
+      # Lighting OP: mwfac$licatopdnafunnon
+      # Faciity type: mwfac$facilitycategory
+      
+      
+
+### OP Lighting Regression 1
+      # Dep: 1: funct. light ; 0: No functional light, incl. not available    (both incl. reported)
+      table(lightcatframe$licatopdfunc, energycatframe3$encate3)
+      
+      lightcatframe$licatopdfunc <- as.numeric(lightcatframe$licatopdfunc)
+      
+      regframe <- data.frame(lightcatframe$licatopdfunc, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframe, function(x) sum(is.na(x))) # n.a. licatopdfunc=83; encate3=88 ("don´t know if connected")
+      sapply(regframe, function(x) length(unique(x)))
+      
+      # Missing values
+      install.packages("Amelia")
+      install.packages("Rcpp")
+      library(Amelia)
+      par("mar")
+      par(mar=c(3,3,1,1))
+      missmap(regframe, main = "Missing values vs observed")   # No variable has too many missings
+      
+      # How missing values are dealt with 
+      is.factor(regframe$lightcatframe.licatopdfunc)
+      is.factor(regframe$energycatframe3.encate3)
+      
+      contrasts(regframe$lightcatframe.licatopdfunc)  
+      contrasts(regframe$energycatframe3.encate3)
+      
+      # Delete missing values
+      regframe <- na.omit(regframe)
+      
+      # Model
+      modellig <- glm(lightcatframe.licatopdfunc ~.,family=binomial(link='logit'),data=regframe)
+      modelligtable <- summary(modellig)
+      #-> c3-6 log odds reduces log odds significantly
+      
+      # OR
+      Oddsratio <- exp(coef(modellig))
+
+      # Add to table ??? (also CI ?)
+      cmodelligtable <- cbind(modelligtable, "OR" = Oddsratio)
+      
+            
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modellig)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modellig, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modellig)
+      # good? (in practice it is difficult to predict a binary event with near certainty)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: 
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframe, modellig, predabil, 972)
+      # 1- $delta = Accuracy 
+      
+      
+      
+      #(Predictive ability: AUC (good predictive ability should be closer at 1 than 0.5))
+      install.packages("ROCR")
+      install.packages("gplots")
+      library(ROCR)
+      p <- predict(modellig, newdata=subset(test,select=c(2,3,4,5,6)), type="response")
+      pr <- prediction(p, test$lightcatframe.licatopdfunc)
+      prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+      par("mar")
+      par(mar=c(2,2,2,2))
+      plot(prf)
+      auc <- performance(pr, measure = "auc")
+      auc <- auc@y.values[[1]]
+      auc #0.68
+      
+  ### OP Lighting REG 2: Dep: 1: available light ; 0: not available    (both incl. reported)
+      lightcatframe$licatopdav[lightcatframe$obsfunc == 1 | lightcatframe$repfunc == 1 | lightcatframe$obsnotfunc == 1 | lightcatframe$repnotfunc == 1] <- 1
+      lightcatframe$licatopdav[lightcatframe$notav == 1] <- 0
+      lightcatframe$licatopdav <- as.numeric(lightcatframe$licatopdav)
+      
+      table(lightcatframe$licatopdav, energycatframe3$encate3)
+      
+      regframe1 <- data.frame(lightcatframe$licatopdav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframe1, function(x) sum(is.na(x))) # n.a. licate=83; encate3=88 ("don´t know if connected")
+      sapply(regframe1, function(x) length(unique(x)))
+      
+      # Delete missing values
+      regframe1 <- na.omit(regframe1)
+      
+      # regression
+      modellig1 <- glm(lightcatframe.licatopdav ~.,family=binomial(link='logit'),data=regframe1)
+      modelligtable1 <- summary(modellig1)
+      
+      # OR
+      Oddsratio <- exp(coef(modellig1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelligtable <- cbind(modelligtable1, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modellig1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modellig1, test="Chisq")        
+      
+
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modellig1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframe1, modellig1, predabil, 972)
+      # 1- $delta = Accuracy --> still not good
+  
+      
+###### Export
+      library(stargazer) 
+      stargazer(modellig, modellig1, type = "html",
+                dep.var.labels=c("Lighting functional (=1)", "Lighting available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="lightoutputOP.htm")
+
+  ### (OP Lighting REG 3: if "reported" are excluded)
+      lightcatframe$licates[lightcatframe$obsfunc == 1] <- 1
+      lightcatframe$licates[lightcatframe$obsnotfunc == 1 | lightcatframe$notav == 1] <- 0
+      lightcatframe$licates <- as.factor(lightcatframe$licates)
+      lightcatframe$licates[lightcatframe$repfunc == 1 | lightcatframe$repnotfunc == 1] <- NA
+      
+      regframes <- data.frame(lightcatframe$licates, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      
+      sapply(regframes, function(x) sum(is.na(x))) # n.a. licate=83; encate3=88 ("don´t know if connected")
+      sapply(regframes, function(x) length(unique(x)))
+      
+      # Delete missing values of lightcat
+      regframes <- na.omit(regframes)
+      
+      modelligworep <- glm(lightcatframe.licates ~.,family=binomial(link='logit'),data=regframes)
+      summary(modelligworep)
+      
+      # difference between the null deviance and the residual deviance 
+      anova(modelligworep, test="Chisq")
+      
+  ### (OP Lighting Reg 3: if "not available" are excluded: func. vs. not funct.)
+      
+      lightcatframe$licatena[lightcatframe$obsfunc == 1 | lightcatframe$repfunc == 1 ] <- 1
+      lightcatframe$licatena[lightcatframe$obsnotfunc == 1 | lightcatframe$repnotfunc == 1] <- 0
+      lightcatframe$licatena[lightcatframe$notav == 1] <- NA
+      lightcatframe$licatena <- as.factor(lightcatframe$licatena)
+      
+      regframena <- data.frame(lightcatframe$licatena, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      
+      sapply(regframena, function(x) sum(is.na(x))) # n.a. licatena=630; encate3=88 ("don´t know if connected")
+      sapply(regframena, function(x) length(unique(x)))
+      
+      # Delete missing values of lightcat
+      regframena <- na.omit(regframena)
+      
+      
+      # Regression
+      modelligna <- glm(lightcatframe.licatena ~.,family=binomial(link='logit'),data=regframena)
+      summary(modelligna)
+      
+      # difference between the null deviance and the residual deviance 
+      anova(modelligna, test="Chisq")
+
+      #####      
+# ORDINAL REGRESSION EXAMPLE: 
+      install.packages("foreign")
+      install.packages("ggplot2")
+      install.packages("MASS")
+      install.packages("Hmisc")
+      install.packages("reshape2")
+      library(foreign)
+      library(MASS)
+      library(ggplot2)
+      
+      
+      lightcatframe$ordinaltest[lightcatframe$obsfunc == 1 | lightcatframe$repfunc == 1 ] <- 1
+      lightcatframe$ordinaltest[lightcatframe$obsnotfunc == 1 | lightcatframe$repnotfunc == 1] <- 2
+      lightcatframe$ordinaltest[lightcatframe$notav == 1 ] <- 3
+      
+            
+      lightcatframe$ordinaltest <- as.factor(lightcatframe$ordinaltest)
+      
+      regframemul <- data.frame(lightcatframe$ordinaltest, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframemul, function(x) sum(is.na(x))) # n.a. licate=83; encate3=88 ("don´t know if connected")
+      sapply(regframemul, function(x) length(unique(x)))
+      lapply(regframemul, FUN = "lightcatframe.ordinaltest", table)
+      
+      lapply(regframemul[, c("lightcatframe.ordinaltest", "facilitycatwho.category")], table)
+      # SMALL n!
+      
+      # ggplot - does not display category "all" ?
+      ggplot(regframemul, aes(x = lightcatframe.ordinaltest, y = energycatframe3$encate3)) +
+        geom_boxplot(size = .15) +
+        geom_jitter(alpha = .2) +
+        facet_grid(mwfac$V001 ~ facilitycatwho$facilitycategory, margins = TRUE) +
+        theme(axis.text.x = element_text(angle = 25, hjust = .5, vjust = .5))
+      
+      lightcatframe$ordinaltest <- relevel(lightcatframe$ordinaltest, ref = 3)
+
+      # Ordinal Regression
+      multilightreg <- polr(lightcatframe$ordinaltest ~ facilitycatwho$facilitycategory + energycatframe3$encate3 + mwfac$V008 + mwfac$V001 + mwfac$V003, data = regframemul, Hess=TRUE)
+      
+      # store table
+      ctable <- coef(summary(multilightreg))
+      
+      # Calculate p-values
+      p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+      
+      # Combine table
+      ctable <- cbind(ctable, "p value" = p)
+      
+      # Confidence intervals
+      ci <- confint(multilightreg)
+      confint.default(multilightreg)
+      
+      # OR
+      exp(coef(multilightreg))
+      
+      # OR and CI
+      exp(cbind(OR = coef(multilightreg), ci))
+      
+      # Test proportional odds assumption
+      
+      sf <- function(y) {
+        c('Y>=1' = qlogis(mean(y >= 1)),
+          'Y>=2' = qlogis(mean(y >= 2)),
+          'Y>=3' = qlogis(mean(y >= 3)))
+      }
+      
+      (s <- with(multilightreg, summary(as.numeric(lightcatframe$ordinaltest) ~ facilitycatwho$facilitycategory + energycatframe3$encate3 + mwfac$V008 + mwfac$V001 + mwfac$V003, fun=sf)))
+
+      
+
+       
+      
+      
+
+      
+### LIGHTING delivery area
+      
+      table(mwfac$V533B) # n=540
+      
+      notavdel <- as.numeric(mwfac$V533B == "Not available")
+      obsfuncdel <- as.numeric(mwfac$V533B == "Observed/functioning")
+      obsnotfuncdel <- as.numeric(mwfac$V533B == "Observed/not/DK functioning")
+      repfuncdel <- as.numeric(mwfac$V533B == "Reported/functioning") 
+      repnotfuncdel <- as.numeric(mwfac$V533B == "Reported/not/DK functioning")
+      
+      lightcatframedel <- data.frame(notavdel, obsfuncdel, obsnotfuncdel, repfuncdel, repnotfuncdel)
+      
+      
+      # available vs. not available
+      table(notavdel==1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+
+      # NA vs funct. vs not funct.
+      lightcatframedel$licatedelavfunnon[lightcatframedel$obsfunc == 1 | lightcatframedel$repfunc == 1 ] <- 1
+      lightcatframedel$licatedelavfunnon[lightcatframedel$obsnotfunc == 1 | lightcatframedel$repnotfunc == 1] <- 2
+      lightcatframedel$licatedelavfunnon[lightcatframedel$notav == 1 ] <- 3
+      
+      
+      #Functionality if lighting is available
+      table(lightcatframedel$licatedelavfunnon == 1, energycatframe3$encate3, facilitycatwho$facilitycategory, notavdel!=1)
+      
+      # Graph/descr
+      # Merge
+      lightcatframedel$INV_ID <- mwfac$INV_ID
+      mwfac <- merge(lightcatframedel, mwfac, by="INV_ID")
+
+      # Variables:
+      # Energy: mwfac$encate2
+      # Lighting Del: mwfac$licatedelavfunnon
+      # Faciity type: mwfac$facilitycategory
+      
+  
+      
+### LIGHTING delivery area Reg 1: 1: funct. light; 0: No functional light (incl. not available)    (both incl. reported)
+      
+      lightcatframedel$licatedelfun[lightcatframedel$obsfuncdel == 1 | lightcatframedel$repfuncdel == 1 ] <- 1
+      lightcatframedel$licatedelfun[lightcatframedel$obsnotfuncdel == 1 | lightcatframedel$repnotfuncdel == 1 | lightcatframedel$notavdel == 1] <- 0
+      
+      lightcatframedel$licatedelfun <- as.numeric(lightcatframedel$licatedelfun)
+      
+      table(lightcatframedel$licatedelfun, energycatframe3$encate3)
+      # -> c6, 1: <2 !!
+      
+      regframedel <- data.frame(lightcatframedel$licatedelfun, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframedel, function(x) sum(is.na(x))) # n.a. licate=520; encate3=88 ("don´t know if connected")
+      sapply(regframedel, function(x) length(unique(x)))
+      
+
+      # Delete missing values 
+      regframedel <- na.omit(regframedel)
+ 
+      # reg
+      modelligdel <- glm(lightcatframedel.licatedelfun ~.,family=binomial(link='logit'), data=regframedel)
+      modelligdeltable <- summary(modelligdel)
+
+      # OR
+      Oddsratio <- exp(coef(modelligdel))
+      
+      # Add to table ??? (also CI ?)
+      cmodelligdeltable <- cbind(modelligdeltable, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelligdel)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelligdel, test="Chisq")        
+      
+      
+      mean(!is.na(regframedel$lightcatframedel.licatedelfun))
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelligdel)
+
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframedel, modelligdel, predabil, 536)
+      # 1- $delta = Accuracy 
+      
+      mean(!is.na(lightcatframe$licatopdfunc))
+      
+      
+  ### Delivery lighting Reg 2: Dep: 1: Av. light; 0: No lighting available    (both incl. reported)
+
+      lightcatframedel$licatedelav[lightcatframedel$obsfuncdel == 1 | lightcatframedel$repfuncdel == 1 | lightcatframedel$obsnotfuncdel == 1 | lightcatframedel$repnotfuncdel == 1] <- 1
+      lightcatframedel$licatedelav[lightcatframedel$notavdel == 1] <- 0
+      lightcatframedel$licatedelav <- as.numeric(lightcatframedel$licatedelav)
+      
+      regframedel1 <- data.frame(lightcatframedel$licatedelav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframedel1, function(x) sum(is.na(x))) # n.a. licate=520; encate3=88 ("don´t know if connected")
+      sapply(regframedel1, function(x) length(unique(x)))
+
+      table(regframedel1$lightcatframedel.licatedelav, regframedel1$energycatframe3.encate3)
+      # -> c6, 1: =5 !!
+      
+ 
+      # Delete missing values of lightcat
+      regframedel1 <- na.omit(regframedel1)
+      
+      # reg
+      modelligdel1 <- glm(lightcatframedel.licatedelav ~.,family=binomial(link='logit'),data=regframedel1)
+      modelligdel1table <- summary(modelligdel1)
+
+      # OR
+      Oddsratio <- exp(coef(modelligdel1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelligdel1table <- cbind(modelligdel1table, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelligdel1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelligdel1, test="Chisq")        
+      
+ 
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      library(rcompanion)
+      nagelkerke(modelligdel1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      library(boot)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframedel1, modelligdel1, predabil, 536)
+      # 1- $delta = Accuracy 
+      
+      library(stargazer) 
+      stargazer(modelligdel, modelligdel1, type = "html",
+                dep.var.labels=c("Lighting functional (=1)", "Lighting available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="lightoutputDEL.htm")
+      
+
+      
+            
+      
+      
+      
+      
+      
+      
+      
+#####      
+      
+      
+#### REFRIGERATION
+
+  ### blood transfusion services available
+      
+      bloodtransf <- as.numeric(mwfac$V034B=="Yes, completed" | mwfac$V034B=="Not returned from field")
+      table(bloodtransf, energycatframe3$encate3)
+      
+      table(bloodtransf, facilitycatwho$facilitycategory)
+      table(bloodtransf, facilitycatwho$facilitycategory)
+      
+      # refrigerator for storing blood (for transfusions)
+      table(mwfac$V876A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      # Temperature
+      table(mwfac$V876B)
+      
+  ### lab area: refrigerator observed: used, observed (blood typing?mwfac$V034A)
+      table(mwfac$V841B)
+      table(mwfac$V841B,energycatframe3$encate3, facilitycatwho$facilitycategory) 
+      # Working order
+      table(mwfac$V842B)
+      
+  ### Refrigerator: Vaccine storage area
+      # Service av.: vaccine storage
+      table(mwfac$V018)    # Child vaccination services offered: 628
+      table(mwfac$V018, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      table(mwfac$LV200)   # Vaccine storage ?? # n=706
+      
+      # Refrigerator av., observed
+      table(mwfac$LV221, energycatframe3$encate3, facilitycatwho$facilitycategory) 
+      
+      # Temperature
+      table(mwfac$LV222A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # (Cold chain monitoring system)
+      table(mwfac$LV224, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Graph/Descript
+      # Energy: mwfac$encate2
+      # Refr: mwfac$refrvac (binary)
+      #       mwfac$LV221 (all categories)
+      # Faciity type: mwfac$facilitycategory
+                  
+### Regression: Refrigeration Vaccine storage area
+      
+      # Appropriate temperature
+      table(mwfac$LV222A)
+      mwfac$refrvac[mwfac$LV222A != "Between +2 and +8 degrees"] <- 0
+      mwfac$refrvac[mwfac$LV222A == "Between +2 and +8 degrees"] <- 1
+      mwfac$refrvac <- as.factor(mwfac$refrvac)
+      
+      regframerefr <- data.frame(mwfac$refrvac, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
+      
+      table(regframerefr$mwfac.refrvac, regframerefr$energycatframe3.encate3)
+      
+      sapply(regframerefr, function(x) sum(is.na(x))) # n.a. ref=432; encate3=88 ("don´t know if connected")
+      sapply(regframerefr, function(x) length(unique(x)))
+
+      # Delete missing values of refr
+      regframerefr <- na.omit(regframerefr)
+      
+     
+      #reg
+      modelrefr <- glm(mwfac.refrvac ~.,family=binomial(link='logit'),data=regframerefr)
+      modelrefrtable <- summary(modelrefr)
+      
+      # OR
+      Oddsratio <- exp(coef(modelrefr))
+      
+      # Add to table ??? (also CI ?)
+      cmodelrefrtable <- cbind(modelrefrtable, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      library(car)
+      vif(modelrefr)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelrefr, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelrefr)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframerefr, modelrefr, predabil, 625)
+      # 1- $delta = Accuracy 
+      
+      library(stargazer) 
+      stargazer(modelrefr, type = "html",
+                dep.var.labels=c("Appropriate vaccine refrigeration temperature (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="VaccRefr.htm")
+      
+      
+      
+############
+
+#### ELEC DEVICE
+      
+  ### Light Microscope of facilities which offer diagn services
+      # Used, observed
+      table(mwfac$V841A1)
+      table(mwfac$V841A1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V841A1, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      # Working order
+      table(mwfac$V842A1)
+      table(mwfac$V842A1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Func. vs. not funct.
+      mwfac$micrfunc[mwfac$V842A1 == "Yes"] <- 1
+      mwfac$micrfunc[mwfac$V842A1 != "Yes" | mwfac$V841A1 == "Not used" | mwfac$V841A1 == "Equipment used, not available today"] <- 0
+      
+      # Av. vs. not av.
+      mwfac$micrav[mwfac$V841A1 == "Equipment used and observed" | mwfac$V841A1 == "Equipment used reported, not seen"] <- 1
+      mwfac$micrav[mwfac$V841A1 == "Not used" | mwfac$V841A1 == "Equipment used, not available today"] <- 0
+
+      
+### Light microscope Regression 1: "func." vs "not func."
+      table(mwfac$micrfunc, energycatframe3$encate3)
+      
+      regframemicr <- data.frame(mwfac$micrfunc, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
+      
+      sapply(regframemicr, function(x) sum(is.na(x))) # n.a. micr=255; encate3=88 ("don´t know if connected")
+      sapply(regframemicr, function(x) length(unique(x)))
+      
+      # Delete missing values of refr
+      regframemicr <- na.omit(regframemicr)
+      
+      
+      #reg
+      modelmicr <- glm(mwfac.micrfunc ~.,family=binomial(link='logit'),data=regframemicr)
+      modelmicrtable <- summary(modelmicr)
+      
+      # OR
+      Oddsratio <- exp(coef(modelmicr))
+      
+      # Add to table ??? (also CI ?)
+      cmodelmicrtable <- cbind(modelmicrtable, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      library(car)
+      vif(modelmicr)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelmicr, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelmicr)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframemicr, modelmicr, predabil, 800)
+      # 1- $delta = Accuracy        
+      
+           
+# Light microscope Regression 2: "Av." vs "not Av."
+      table(mwfac$micrav, energycatframe3$encate3)
+   
+      regframemicr1 <- data.frame(mwfac$micrav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
+      
+      sapply(regframemicr1, function(x) sum(is.na(x))) # n.a. micr1=255; encate3=88 ("don´t know if connected")
+      sapply(regframemicr1, function(x) length(unique(x)))
+      
+      # Delete missing values of refr
+      regframemicr1 <- na.omit(regframemicr1)
+      
+      
+      #reg
+      modelmicr1 <- glm(mwfac.micrav ~.,family=binomial(link='logit'),data=regframemicr1)
+      modelmicr1table <- summary(modelmicr1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelmicr1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelmicr1table <- cbind(modelmicr1table, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      library(car)
+      vif(modelmicr1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelmicr1, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelmicr1)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframemicr1, modelmicr1, predabil, 800)
+      # 1- $delta = Accuracy       
+  
+      # Export
+      library(stargazer) 
+      stargazer(modelmicr, modelmicr1, type = "html",
+                dep.var.labels=c("Light microscope functional (=1)", "Light microscope available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="DEV_Micr.htm")
+      
+          
+  
+  ### Newborn Incubator
+      
+      notavinc <- as.numeric(mwfac$V536B == "Not available")
+      obsfuncinc <- as.numeric(mwfac$V536B == "Observed/functioning")
+      obsnotfuncinc <- as.numeric(mwfac$V536B == "Observed/not/DK functioning")
+      repfuncinc <- as.numeric(mwfac$V536B == "Reported/functioning") 
+      repnotfuncinc <- as.numeric(mwfac$V536B == "Reported/not/DK functioning")
+      
+      incframe <- data.frame(notavinc, obsfuncinc, obsnotfuncinc, repfuncinc, repnotfuncinc)
+      
+      incframe$incfunc[incframe$obsfuncinc == 1 | incframe$repfuncinc == 1 ] <- 1
+      incframe$incfunc[incframe$obsnotfunc == 1 | incframe$repnotfuncinc == 1 | incframe$notavinc == 1] <- 0
+      
+      table(incframe$incfunc, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # available vs. not available
+      incframe$incav[incframe$notavinc != 1] <- 1
+      incframe$incav[incframe$notavinc == 1] <- 0
+      
+      # Other heat source for premature infants
+      table(mwfac$V536C, energycatframe3$encate3, mwfac$V536B == "Not available") # 58 have another heat source, out of these 44 functioning
+      
+# Newborn incubator Regression 1: "func." vs "not func."
+      table(incframe$incfunc, energycatframe3$encate3)
+      # 0 cell and low sample size!
+      
+      regframeninc <- data.frame(incframe$incfunc, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
+      
+      sapply(regframeninc, function(x) sum(is.na(x))) # n.a. ninc=520; encate3=88 ("don´t know if connected")
+      sapply(regframeninc, function(x) length(unique(x)))
+      
+      # Delete missing values of refr
+      regframeninc <- na.omit(regframeninc)
+      
+      
+      #reg
+      modelninc <- glm(incframe.incfunc ~.,family=binomial(link='logit'),data=regframeninc)
+      modelninctable <- summary(modelninc)
+      
+      # OR
+      Oddsratio <- exp(coef(modelninc))
+      
+      # Add to table ??? (also CI ?)
+      cmodelninctable <- cbind(modelninctable, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      library(car)
+      vif(modelninc)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelninc, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelninc)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframeninc, modelninc, predabil, 536)
+      # 1- $delta = Accuracy 
+   
+      
+# Regression 2: "av." vs "not av."
+      table(incframe$incav, energycatframe3$encate3)
+      
+      regframeninc1 <- data.frame(incframe$incav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
+      
+      # Delete missing values 
+      regframeninc1 <- na.omit(regframeninc1)
+     
+      #reg
+      modelninc1 <- glm(incframe.incav ~.,family=binomial(link='logit'),data=regframeninc1)
+      modelninc1table <- summary(modelninc1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelninc1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelninc1table <- cbind(modelninc1table, "OR" = Oddsratio)
+      
+      # Multicollinearity (5< should be excluded)
+      library(car)
+      vif(modelninc1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelninc1, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelninc1)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframeninc1, modelninc1, predabil, 536)
+      # 1- $delta = Accuracy 
+      
+      library(stargazer) 
+      stargazer(modelninc, modelninc1, type = "html",
+                dep.var.labels=c("Newborn incubator functional (=1)", "Newborn incubator available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="DEV_NBIncub.htm")
+      
+      
+
+      
+  
+  ### Hematology analyzer
+      # Facilities offering hemoglobin testing
+      table(mwfac$V840D)
+      table(mwfac$V840D, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      # av, used
+      table(mwfac$V845A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(mwfac$V845A, energycatframe3$encate3)
+      table(mwfac$V845A)
+      
+      table(mwfac$V845A)
+      
+      # working order
+      table(mwfac$V846A)
+      table(mwfac$V846A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Functionality
+      mwfac$hemanfunc[mwfac$V846A == "Yes"] <- 1
+      mwfac$hemanfunc[mwfac$V846A != "Yes" | mwfac$V845A == "Not used" | mwfac$V845A == "Equipment used, not available today"] <- 0
+      
+      # Availability
+      mwfac$hemanav[mwfac$V845A == "Equipment used and observed" | mwfac$V845A == "Equipment used reported, not seen"] <- 1
+      mwfac$hemanav[mwfac$V845A == "Not used" | mwfac$V845A == "Equipment used, not available today"] <- 0
+      
+      
+      
+### Regression 1: 1: "funct", 0: "not funct"
+      
+      table(mwfac$hemanfunc, energycatframe3$encate3)
+      # 0 cells!
+      
+      regframehem <- data.frame(mwfac$hemanfunc, facilitycatwho$facilitycategory, energycatframe3$encate3,  mwfac$V001, mwfac$V003)
+      sapply(regframehem, function(x) sum(is.na(x))) # n.a. hem=789; encate3=88 ("don´t know if connected")
+      sapply(regframehem, function(x) length(unique(x)))
+      
+      # Missing values
+      regframehem <- na.omit(regframehem)
+      
+      #reg
+      modelhem <- glm(mwfac.hemanfunc~.,family=binomial(link='logit'),data=regframehem)
+      modelhemtable <- summary(modelhem)
+      
+      # OR
+      Oddsratio <- exp(coef(modelhem))
+      
+      # Add to table ??? (also CI ?)
+      cmodelhemtable <- cbind(modelhemtable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelhem)
+      # Facility type >5, authority>5 -> skip authority
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelhem, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelhem)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframehem, modelhem, predabil, 267)
+      
+### Hematology Regression 2: 1: "av", 0: "not av"
+      
+      table(mwfac$hemanav, energycatframe3$encate3)
+      # 0 cells!
+      
+      regframehem1 <- data.frame(mwfac$hemanav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008, mwfac$V001, mwfac$V003)
+      sapply(regframehem1, function(x) sum(is.na(x))) # n.a. hem1=789; encate3=88 ("don´t know if connected")
+      sapply(regframehem1, function(x) length(unique(x)))
+      
+      # Missing values
+      regframehem1 <- na.omit(regframehem1)
+      
+      #reg
+      modelhem1 <- glm(mwfac.hemanav~.,family=binomial(link='logit'),data=regframehem1)
+      modelhem1table <- summary(modelhem1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelhem1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelhem1table <- cbind(modelhem1table, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelhem1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelhem1, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelhem1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs ... times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframehem1, modelhem1, predabil, 267)
+      
+      
+      library(stargazer) 
+      stargazer(modelhem, modelhem1, type = "html",
+                dep.var.labels=c("Hematology analyzer functional (=1)", "Hematology analyzer available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="DEV_Hem.htm")
+      
+      
+      
+      
+       
+##### ICT 
+      # Availability of communication technologies
+      nocommav <- as.numeric(mwfac$V127A == "No landline" & mwfac$V127B == "No cell phone" & mwfac$V127C == "No shortwave radio")
+      commav <- as.numeric(mwfac$V127A != "No landline" | mwfac$V127B != "No cell phone" | mwfac$V127C != "No shortwave radio")
+      table(commav)
+      
+      comframe <- data.frame(nocommav, commav)
+      
+      comframe$comcatav[comframe$nocommav == 1] <- 0
+      comframe$comcatav[comframe$commav == 1] <- 1
+      
+      comframe$comcatav <- factor(comframe$comcatav)
+      table(comframe$comcatav,energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Functionality of available Communication equipment
+      funcom <- as.numeric(mwfac$V127 != "No functioning landline, cell phone or shortwave at facility")
+      table(funcom, energycatframe3$encate3, facilitycatwho$facilitycategory, comframe$comcatav == 1)
+      
+      # NA vs. not functional vs. functional
+      comframe$comcatavfunnonfun[mwfac$V127 != "No functioning landline, cell phone or shortwave at facility"] <- 1
+      comframe$comcatavfunnonfun[mwfac$V127 == "No functioning landline, cell phone or shortwave at facility"] <- 2
+      comframe$comcatavfunnonfun[comframe$nocommav == 1] <- 3
+      
+      # Funct. vs. not funct.
+      comframe$comcatfun[mwfac$V127 != "No functioning landline, cell phone or shortwave at facility"] <- 1
+      comframe$comcatfun[mwfac$V127 == "No functioning landline, cell phone or shortwave at facility" | comframe$nocommav == 1] <- 0
+      
+      # Landline telephone    
+      table(mwfac$V127A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V127A, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      # Cellphone
+      table(mwfac$V127B, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V127B, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      # Shortwave radio
+      table(mwfac$V127C, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V127C, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      # Communiation equipment
+      funcom <- as.numeric(mwfac$V127 != "No functioning landline, cell phone or shortwave at facility")
+      
+      table(funcom, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V127, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+  # Computer
+      table(mwfac$V128, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V128, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+  
+      mwfac$compufunc[mwfac$V128 == "Yes, functioning"] <- 1
+      mwfac$compufunc[mwfac$V128 != "Yes, functioning"] <- 0
+      
+      mwfac$compuav[mwfac$V128 != "No computer"] <- 1
+      mwfac$compuav[mwfac$V128 == "No computer"] <- 0
+       
+  # Access to email, internet at least 2h/day from mobilephone or computer (when client services are offered)  
+      table(mwfac$V129, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V129, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      table(mwfac$V129, mwfac$V128)    
+      
+      inter <- as.numeric(mwfac$V129 != "No") 
+      nointer <- as.numeric(mwfac$V129 == "No")
+      
+      interframe <- data.frame(inter, nointer)
+      
+      interframe$intercate[interframe$inter == 1] <- 1
+      interframe$intercate[interframe$nointer == 1] <- 0
+      
+      table(interframe$intercate, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      
+      # Access to email, internet in facilities where a computer is provided
+      table(interframe$intercate, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V128 != "No computer")
+      
+      
+      # System to compile health services data in place (not specified if digital)    
+      table(mwfac$V033)
+      
+      # Referral system on Computer or paper     
+      table(mwfac$V1107C)
+      
+### Regression Communication
+      # Dep: 1: funct. comm ; 0: No functional com, incl. not available    (both incl. reported)
+      table(comframe$comcatfun, energycatframe3$encate3)
+      
+      comframe$comcatfun <- as.numeric(comframe$comcatfun)
+      
+      regframecom <- data.frame(comframe$comcatfun, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframecom, function(x) sum(is.na(x))) # n.a. com=83; encate3=88 ("don´t know if connected")
+      sapply(regframecom, function(x) length(unique(x)))
+      
+      # Missing values
+      regframecom <- na.omit(regframecom)
+      
+      #reg
+      modelcom <- glm(comframe.comcatfun~.,family=binomial(link='logit'),data=regframecom)
+      modelcomtable <- summary(modelcom)
+     
+      # OR
+      Oddsratio <- exp(coef(modelcom))
+      
+      # Add to table ??? (also CI ?)
+      cmodelcomtable <- cbind(modelcomtable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelcom)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelcom, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelcom)
+
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframecom, modelcom, predabil, 972)
+
+# Reg Communication: Dep: 1: av. comm ; 0: No av. com    (both incl. reported)
+      table(comframe$comcatav, energycatframe3$encate3)
+      
+
+      regframecom1 <- data.frame(comframe$comcatav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframecom1, function(x) sum(is.na(x))) # n.a. com=83; encate3=88 ("don´t know if connected")
+      sapply(regframecom1, function(x) length(unique(x)))
+      
+      # Missing values
+      regframecom1 <- na.omit(regframecom1)
+      
+      #reg
+      modelcom1 <- glm(comframe.comcatav~.,family=binomial(link='logit'),data=regframecom1)
+      modelcom1table <- summary(modelcom1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelcom1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelcom1table <- cbind(modelcom1table, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelcom1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelcom1, test="Chisq")        
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelcom1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframecom1, modelcom1, predabil, 972)
+      
+      
+      
+      library(stargazer) 
+      stargazer(modelcom, modelcom1, type = "html",
+                dep.var.labels=c("Communication technology functional (=1)", "Communication technology available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="ICT_Comm.htm")
+      
+      
+### Regression Information
+      # Regression 1 ICT computer: Dep: 1: funct. computer ; 0: No functional computer, incl. not available    (both incl. reported)
+      table(mwfac$compufunc, energycatframe3$encate3)
+
+      regframecompu <- data.frame(mwfac$compufunc, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframecompu, function(x) sum(is.na(x))) # n.a. compu=83; encate3=88 ("don´t know if connected")
+      sapply(regframecompu, function(x) length(unique(x)))
+      
+      # Missing values
+      regframecompu <- na.omit(regframecompu)
+      
+      #reg
+      modelcompu <- glm(mwfac.compufunc~.,family=binomial(link='logit'),data=regframecompu)
+      modelcomputable <- summary(modelcompu)
+      
+      # OR
+      Oddsratio <- exp(coef(modelcompu))
+      
+      # Add to table ??? (also CI ?)
+      cmodelcomputable <- cbind(modelcomputable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelcompu)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelcompu, test="Chisq") 
+
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelcompu)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframecompu, modelcompu, predabil, 972)
+
+### Regression 2 ICT computer: Dep: 1: av. computer ; 0: No av. computer (both incl. reported)
+      table(mwfac$compuav, energycatframe3$encate3)
+      # c6 = 1 !
+      
+      mwfac$compuav[mwfac$V128 != "No computer"] <- 1
+      mwfac$compuav[mwfac$V128 == "No computer"] <- 0
+      
+      regframecompu1 <- data.frame(mwfac$compuav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframecompu1, function(x) sum(is.na(x))) # n.a. compu=83; encate3=88 ("don´t know if connected")
+      sapply(regframecompu1, function(x) length(unique(x)))
+      
+      # Missing values
+      regframecompu1 <- na.omit(regframecompu1)
+      
+      #reg
+      modelcompu1 <- glm(mwfac.compuav~.,family=binomial(link='logit'),data=regframecompu1)
+      modelcompu1table <- summary(modelcompu1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelcompu1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelcompu1table <- cbind(modelcomputable1, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelcompu1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelcompu1, test="Chisq") 
+
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelcompu1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframecompu1, modelcompu1, predabil, 972)
+      
+
+      
+# ICT Internet (&computer)
+  # Regression 1: 1: "Internet av. and funct. computer", 0: "No internet and/or no funct. computer"   
+    mwfac$Internandfunccomp[interframe$intercate == 1 & mwfac$compufunc == 1] <- 1     
+    mwfac$Internandfunccomp[(interframe$intercate == 0 & mwfac$compufunc == 0) | 
+                              (interframe$intercate == 1 & mwfac$compufunc == 0) |
+                              (interframe$intercate == 0 & mwfac$compufunc == 1)] <- 0     
+    
+    
+    table(mwfac$Internandfunccomp, energycatframe3$encate3)
+    # c6 = 0 !
+
+    regframecompuinter <- data.frame(mwfac$Internandfunccomp, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+    sapply(regframecompuinter, function(x) sum(is.na(x))) # n.a. compuinter=83; encate3=88 ("don´t know if connected")
+    sapply(regframecompuinter, function(x) length(unique(x)))
+    
+    # Missing values
+    regframecompuinter <- na.omit(regframecompuinter)
+    
+    #reg
+    modelcompuinter <- glm(mwfac.Internandfunccomp~.,family=binomial(link='logit'),data=regframecompuinter)
+    modelcompuintertable <- summary(modelcompuinter)
+    
+    # OR
+    Oddsratio <- exp(coef(modelcompuinter))
+    
+    # Add to table ??? (also CI ?)
+    cmodelcompuintertable <- cbind(modelcompuintertable, "OR" = Oddsratio)
+    
+    
+    # Multicollinearity (5< should be excluded)
+    install.packages("car")
+    library(car)
+    vif(modelcompuinter)
+    
+    # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+    # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+    anova(modelcompuinter, test="Chisq") 
+    
+ 
+    # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+    # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+    install.packages("rcompanion")
+    library(rcompanion)
+    nagelkerke(modelcompuinter)
+    
+    
+    # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+    # Predictive ability: Necessary, as we know that model not good fit?
+    # cross validation
+    install.packages("boot")
+    library(boot)
+    
+    # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+    predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+    cv.glm(regframecompuinter, modelcompuinter, predabil, 972)
+    
+  # Regression 2: 1: "Internet av.", 0: "No internet av."   
+
+    table(interframe$intercate, energycatframe3$encate3)
+    
+    regframeinter <- data.frame(interframe$intercate, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+    sapply(regframeinter, function(x) sum(is.na(x))) # n.a. inter=83; encate3=88 ("don´t know if connected")
+    sapply(regframeinter, function(x) length(unique(x)))
+    
+    # Missing values
+    regframeinter <- na.omit(regframeinter)
+    
+    #reg
+    modelinter <- glm(interframe.intercate~.,family=binomial(link='logit'),data=regframeinter)
+    modelintertable <- summary(modelinter)
+    
+    # OR
+    Oddsratio <- exp(coef(modelinter))
+    
+    # Add to table ??? (also CI ?)
+    cmodelintertable <- cbind(modelintertable, "OR" = Oddsratio)
+    
+    
+    # Multicollinearity (5< should be excluded)
+    install.packages("car")
+    library(car)
+    vif(modelinter)
+    
+    # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+    # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+    anova(modelinter, test="Chisq") 
+    
+
+    # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+    # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+    install.packages("rcompanion")
+    library(rcompanion)
+    nagelkerke(modelinter)
+    
+    
+    # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+    # Predictive ability: Necessary, as we know that model not good fit?
+    # cross validation
+    install.packages("boot")
+    library(boot)
+    
+    # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+    predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+    cv.glm(regframeinter, modelinter, predabil, 972)
+    
+    
+    library(stargazer) 
+    stargazer(modelcompu, modelcompu1, modelcompuinter, modelinter, type = "html",
+              dep.var.labels=c("Computer functional (=1)", "Computer available (=1)", "Computer functional and internet available (=1)", "Internet available (=1)"),
+              covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                 "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                 "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                 "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                 "Rural facility (Ref.: Urban facility)"), out="ICT_CompuInter.htm")
+    
+    
+    
+    
+    
+     
+      
+### Water & sanitation
+      # Most commonly used source of water
+      table(mwfac$V123, energycatframe3$encate3,facilitycatwho$facilitycategory)
+      
+      # Water source categories
+      nowatsource <- as.numeric(mwfac$V123 == "No water source")
+      piped <- as.numeric(mwfac$V123 == "Piped into facility" | mwfac$V123 == "Piped onto facility grounds")
+      improvwat <- as.numeric(mwfac$V123 == "Public tap/standpipe" | mwfac$V123 == "Protected well" | mwfac$V123 == "Tubewell/borehole undefined" | mwfac$V123 == "Protected spring" | mwfac$V123 =="Rain water")
+      unimprovwat <- as.numeric(mwfac$V123 == "Unprotected well" | mwfac$V123 == "River/lake/pond" | mwfac$V123 == "Cart/small tank/drum" | mwfac$V123 == "Tanker truck" )
+      otherwat <- as.numeric(mwfac$V123 == "Other")
+      
+      waterframe <- data.frame(nowatsource, piped, improvwat, unimprovwat, otherwat)
+      
+      waterframe$watcat[waterframe$nowatsource == 1] <- "nowatsource"
+      waterframe$watcat[waterframe$piped == 1] <- "piped"
+      waterframe$watcat[waterframe$improvwat == 1] <- "improvwat"
+      waterframe$watcat[waterframe$unimprovwat == 1] <- "unimprovwat"
+      waterframe$watcat[waterframe$otherwat == 1] <- "other"
+      
+      
+      table(waterframe$watcat, energycatframe3$encate3,facilitycatwho$facilitycategory)
+      table(waterframe$watcat, energycatframe3$encate3)
+      
+      
+      # USEFUL? Is water outlet from this source available onsite, within 500 meters of the facility, or beyond 500M of facility?
+      table(mwfac$V124)      
+      
+      # Running water OPD (incl. PIPED, BUCKET WITH TAP OR POUR PITCHER)  
+      table(mwfac$V168A1)
+      table(mwfac$V168A1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(mwfac$V168A1, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V123 == "Piped into facility")
+      
+      
+      # Running water delivery area (incl. PIPED, BUCKET WITH TAP OR POUR PITCHER)
+      table(mwfac$V531A1)
+      table(mwfac$V531A1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(mwfac$V531A1, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V123 == "Piped into facility")
+      
+      # Running water Lab
+      table(mwfac$V866A1)
+    
+#### Regression 1: 1: "piped water" vs. 0: "not piped"      
+      
+      mwfac$watersource[waterframe$watcat == "piped"] <- 1
+      mwfac$watersource[waterframe$watcat != "piped"] <- 0
+      
+      table(mwfac$watersource, energycatframe3$encate3)
+      # c1 =2
+      
+      regframewater <- data.frame(mwfac$watersource, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframewater, function(x) sum(is.na(x))) # n.a. water=83; encate3=88 ("don´t know if connected")
+      sapply(regframewater, function(x) length(unique(x)))
+      
+      # Missing values
+      regframewater <- na.omit(regframewater)
+      
+      #reg
+      modelwater <- glm(mwfac.watersource~.,family=binomial(link='logit'),data=regframewater)
+      modelwatertable <- summary(modelwater)
+      
+      # OR
+      Oddsratio <- exp(coef(modelwater))
+      
+      # Add to table ??? (also CI ?)
+      cmodelwatertable <- cbind(modelwatertable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelwater)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelwater, test="Chisq") 
+      
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelwater)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframewater, modelwater, predabil, 972)
+      
+      
+      
+      ### Sanitation technology available for client use    
+      table(mwfac$V153A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V153A, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      # Sanitation categories
+      nosan <- as.numeric(mwfac$V153A == "No functioning facility")
+      Flush <- as.numeric(mwfac$V153A == "Flush to piped sewer system" | mwfac$V153A == "Flush to septic tank")
+      improvsan <- as.numeric(mwfac$V153A == "Flush to pit latrine" | mwfac$V153A == "Ventilated improved pit latrine" | mwfac$V153A == "Pit latrine with slab")
+      unimprovsan <- as.numeric(mwfac$V153A == "Flush to somewhere else" | mwfac$V153A == "Pit latrine without slab/ open pit")
+      
+      saniframe <- data.frame(nosan, Flush, improvsan, unimprovsan)
+      
+      saniframe$sancat[saniframe$nosan == 1] <- "nosan"
+      saniframe$sancat[saniframe$Flush == 1] <- "Flush"
+      saniframe$sancat[saniframe$improvsan == 1] <- "improvsan"
+      saniframe$sancat[saniframe$unimprovsan == 1] <- "unimprovsan"
+      
+      table(saniframe$sancat, energycatframe3$encate3,facilitycatwho$facilitycategory)
+      
+#### Regression sanitation: 1: "Flushed toilets available" vs. 2: "other/no sanitation"      
+      
+      mwfac$flushsan[saniframe$sancat == "Flush"] <- 1
+      mwfac$flushsan[saniframe$sancat != "Flush"] <- 0
+      
+      table(mwfac$flushsan, energycatframe3$encate3)
+      # 0 cell in c6 !
+      
+      regframesan <- data.frame(mwfac$flushsan, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframesan, function(x) sum(is.na(x))) # n.a. san=83; encate3=88 ("don´t know if connected")
+      sapply(regframesan, function(x) length(unique(x)))
+      
+      # Missing values
+      regframesan <- na.omit(regframesan)
+      
+      #reg
+      modelsan <- glm(mwfac.flushsan~.,family=binomial(link='logit'),data=regframesan)
+      modelsantable <- summary(modelsan)
+      
+      # OR
+      Oddsratio <- exp(coef(modelsan))
+      
+      # Add to table ??? (also CI ?)
+      cmodelsantable <- cbind(modelsantable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelsan)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelsan, test="Chisq") 
+      
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelsan)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframesan, modelsan, predabil, 972)
+      
+      library(stargazer) 
+      stargazer(modelwater, modelsan, type = "html",
+                dep.var.labels=c("Piped water into facility/on facility grounds (=1) vs. other/no water source", "Flushed toilets into sewer system/septic tank  (=1) vs. other/no sanitation"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="WaSa.htm")
+      
+      
+      
+      
+      
+      
+      
+##### Sterilization, disinfection
+      
+      # Facilities which process equipment 
+      table(mwfac$V173A)  # inside only: n=796
+      table(mwfac$V173) # Sterilize equipment: n= 853
+      table(mwfac$V173A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      write.xlsx(table(mwfac$V173A, energycatframe3$encate3, facilitycatwho$facilitycategory), file = "Electricity_MalawiR.xlsx", row.names = FALSE)
+      
+      #ELECTRIC
+      # Electric autoclave
+      table(mwfac$V177B)
+      
+      # Electric dry heat sterilizer
+      table(mwfac$V177A)
+      
+      # Electric pot with cover(steam/boil)
+      table(mwfac$V177D)
+      
+      #NON-ELECTRIC
+      # Non-electric autoclave
+      table(mwfac$V177C)
+      
+      # Non-electric pot with cover(steam/boil)
+      table(mwfac$V176A)
+      
+      # Heat source for non-electric equipment:Available/functioning -> functionality of non-electric pot
+      table(mwfac$V177E)
+      
+      # Chemical HLD
+      table(mwfac$V176C)
+      
+      # Method of processing for reuse ???
+      table(mwfac$V175A.1)
+      table(mwfac$V175A.2)
+      table(mwfac$V175A.3)
+      table(mwfac$V175A.4)
+      table(mwfac$V175A.5)
+      table(mwfac$V175A.6)
+      table(mwfac$V175A.7)
+      table(mwfac$V175A.8)       
+      
+      
+      # Processing equipment
+      
+      elec <- as.numeric((mwfac$V177B != "Not available" & mwfac$V177A == "Not available" & mwfac$V177D == "Not available")
+                         | (mwfac$V177B == "Not available" & mwfac$V177A != "Not available" & mwfac$V177D == "Not available")
+                         | (mwfac$V177B == "Not available" & mwfac$V177A == "Not available" & mwfac$V177D != "Not available")  
+                         | (mwfac$V177B != "Not available" & mwfac$V177A != "Not available" & mwfac$V177D != "Not available")  
+                         | (mwfac$V177B != "Not available" & mwfac$V177A != "Not available" & mwfac$V177D == "Not available")  
+                         | (mwfac$V177B != "Not available" & mwfac$V177A == "Not available" & mwfac$V177D != "Not available")  
+                         | (mwfac$V177B == "Not available" & mwfac$V177A != "Not available" & mwfac$V177D != "Not available") ) 
+      
+      nonelheat <- as.numeric((mwfac$V177C != "Not available" & mwfac$V176A == "Not available")
+                              | (mwfac$V177C == "Not available" & mwfac$V176A != "Not available")
+                              | (mwfac$V177C != "Not available" & mwfac$V176A != "Not available")) 
+      
+      chem <- as.numeric(mwfac$V176C != "Not available")
+      
+      noprocso <- as.numeric(mwfac$V177B == "Not available" & mwfac$V177A == "Not available" & mwfac$V177C == "Not available" & mwfac$V176A == "Not available" & mwfac$V176C == "Not available" & mwfac$V177D == "Not available")                  
+      
+      procframe <- data.frame(elec, nonelheat, chem, noprocso)
+      
+      procframe$proccat[procframe$elec == 1 & procframe$nonelheat == 0  & procframe$chem == 0 & procframe$noprocso == 0] <- "onlyelec"
+      procframe$proccat[procframe$elec == 1 & procframe$nonelheat == 1  & procframe$chem == 0 & procframe$noprocso == 0] <- "elecandnonelheat"
+      procframe$proccat[procframe$elec == 1 & procframe$nonelheat == 0  & procframe$chem == 1 & procframe$noprocso == 0] <- "elecandchem"
+      procframe$proccat[procframe$elec == 0 & procframe$nonelheat == 1  & procframe$chem == 1 & procframe$noprocso == 0] <- "nonelheatandchem"
+      procframe$proccat[procframe$elec == 0 & procframe$nonelheat == 1  & procframe$chem == 0 & procframe$noprocso == 0] <- "onlynonelheat"
+      procframe$proccat[procframe$elec == 0 & procframe$nonelheat == 0  & procframe$chem == 1 & procframe$noprocso == 0] <- "onlychem"
+      procframe$proccat[procframe$elec == 1 & procframe$nonelheat == 1  & procframe$chem == 1 & procframe$noprocso == 0] <- "elheatchem"
+      procframe$proccat[procframe$elec == 0 & procframe$nonelheat == 0  & procframe$chem == 0 & procframe$noprocso == 1] <- "noprocso"
+      
+      procframe$proccat <- factor(procframe$proccat)
+      
+      table(procframe$proccat, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V173A == "Process inside facility only")
+      table(procframe$proccat, mwfac$V173A == "Process inside facility only")
+      table(procframe$proccat)
+      
+      # Functionality if only electric device & processing only within facility
+      # El dry heat
+      notav1 <- as.numeric(mwfac$V177A == "Not available")
+      obsfunc1 <- as.numeric(mwfac$V177A == "Observed, functioning")
+      obsnotfunc1 <- as.numeric(mwfac$V177A == "Observed, not/DK if functioning")
+      repfunc1 <- as.numeric(mwfac$V177A == "Reported functioning") 
+      repnotfunc1 <- as.numeric(mwfac$V177A == "Reported, not/DK  if functioning")
+      
+      procfuncframe1 <- data.frame(notav1, obsfunc1, obsnotfunc1, repfunc1, repnotfunc1 )
+      
+      procfuncframe1$cate1[procfuncframe1$obsfunc1 == 1 | procfuncframe1$repfunc1 == 1 ] <- 0
+      procfuncframe1$cate1[procfuncframe1$obsnotfunc1 == 1 | procfuncframe1$repnotfunc1 == 1] <- 1
+      procfuncframe1$cate1[procfuncframe1$notav1 == 1] <- 2
+      
+      
+      # Electric Autoclave
+      notav2 <- as.numeric(mwfac$V177B == "Not available")
+      obsfunc2 <- as.numeric(mwfac$V177B == "Observed, functioning")
+      obsnotfunc2 <- as.numeric(mwfac$V177B == "Observed, not/DK if functioning")
+      repfunc2 <- as.numeric(mwfac$V177B == "Reported functioning") 
+      repnotfunc2 <- as.numeric(mwfac$V177B == "Reported, not/DK  if functioning")
+      
+      procfuncframe2 <- data.frame(notav2, obsfunc2, obsnotfunc2, repfunc2, repnotfunc2)
+      
+      procfuncframe2$cate2[procfuncframe2$obsfunc2 == 1 | procfuncframe2$repfunc2 == 1 ] <- 0
+      procfuncframe2$cate2[procfuncframe2$obsnotfunc2 == 1 | procfuncframe2$repnotfunc2 == 1 ] <- 1
+      procfuncframe2$cate2[procfuncframe2$notav2 == 1 ] <- 2
+      
+      
+      # Electric pot
+      notav3 <- as.numeric(mwfac$V177D == "Not available")
+      obsfunc3 <- as.numeric(mwfac$V177D == "Observed, functioning" )
+      obsnotfunc3 <- as.numeric(mwfac$V177D == "Observed, not/DK if functioning" )
+      repfunc3 <- as.numeric(mwfac$V177D == "Reported functioning" ) 
+      repnotfunc3 <- as.numeric(mwfac$V177D == "Reported, not/DK  if functioning" )
+      
+      procfuncframe3 <- data.frame(notav3, obsfunc3, obsnotfunc3, repfunc3, repnotfunc3)
+      
+      procfuncframe3$cate3[procfuncframe3$obsfunc3 == 1 | procfuncframe3$repfunc3 == 1 ] <- 0
+      procfuncframe3$cate3[procfuncframe3$obsnotfunc3 == 1 | procfuncframe3$repnotfunc3 == 1] <- 1
+      procfuncframe3$cate3[procfuncframe3$notav3 == 1] <- 2
+      
+      # All 3 electronic processing technologies
+      
+      elecproc <- data.frame(procfuncframe1$cate1, procfuncframe2$cate2, procfuncframe3$cate3)
+      
+      elecproc$funcproc[(elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 == 1 & elecproc$procfuncframe3.cate3 == 1) 
+                        | (elecproc$procfuncframe1.cate1 == 1 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 == 1) 
+                        | (elecproc$procfuncframe1.cate1 == 1 & elecproc$procfuncframe2.cate2 == 1 & elecproc$procfuncframe3.cate3 != 1) 
+                        | (elecproc$procfuncframe1.cate1 == 1 & elecproc$procfuncframe2.cate2 == 1 & elecproc$procfuncframe3.cate3 == 1) 
+                        | (elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 == 1) 
+                        | (elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 == 1 & elecproc$procfuncframe3.cate3 != 1) 
+                        | (elecproc$procfuncframe1.cate1 == 1 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 != 1) ] <- "nofuncprocess"
+      
+      elecproc$funcproc[elecproc$procfuncframe1.cate1 == 2 & elecproc$procfuncframe2.cate2 == 2 & elecproc$procfuncframe3.cate3 == 2 ] <- "No elec"
+      
+      elecproc$funcproc[(elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 == 0 & elecproc$procfuncframe3.cate3 == 0) 
+                        | (elecproc$procfuncframe1.cate1 == 0 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 == 0) 
+                        | (elecproc$procfuncframe1.cate1 == 0 & elecproc$procfuncframe2.cate2 == 0 & elecproc$procfuncframe3.cate3 != 1) 
+                        | (elecproc$procfuncframe1.cate1 == 0 & elecproc$procfuncframe2.cate2 == 0 & elecproc$procfuncframe3.cate3 == 0) 
+                        | (elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 == 0) 
+                        | (elecproc$procfuncframe1.cate1 != 1 & elecproc$procfuncframe2.cate2 == 0 & elecproc$procfuncframe3.cate3 != 1) 
+                        | (elecproc$procfuncframe1.cate1 == 0 & elecproc$procfuncframe2.cate2 != 1 & elecproc$procfuncframe3.cate3 != 1) ] <- "funcprocess"
+      
+      table(elecproc$funcproc, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V173A == "Process inside facility only" )
+    
+      
+### Processing technology: Regression 1 "func elec techn" vs. "no func elec techn"
+      
+      mwfac$procregfunc[elecproc$funcproc == "funcprocess" & mwfac$V173A == "Process inside facility only"] <- 1
+      mwfac$procregfunc[elecproc$funcproc != "funcprocess" & mwfac$V173A == "Process inside facility only"] <- 0
+      
+      table(mwfac$procregfunc, energycatframe3$encate3)      
+      # c1 = 3 !
+      
+      # reg
+      regframeproctec <- data.frame(mwfac$procregfunc, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframeproctec, function(x) sum(is.na(x))) # n.a. proctec=264; encate3=88 ("don´t know if connected")
+      sapply(regframeproctec, function(x) length(unique(x)))
+      
+      # Missing values
+      regframeproctec <- na.omit(regframeproctec)
+      
+      #reg
+      modelproctec <- glm(mwfac.procregfunc~.,family=binomial(link='logit'),data=regframeproctec)
+      modelproctectable <- summary(modelproctec)
+      
+      # OR
+      Oddsratio <- exp(coef(modelproctec))
+      
+      # Add to table ??? (also CI ?)
+      cmodelproctectable <- cbind(modelproctectable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelproctec)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelproctec, test="Chisq") 
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelproctec)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframeproctec, modelproctec, predabil, 793)
+ 
+      
+### Processing technology: Regression 2 "av elec techn" vs. "no av elec techn"
+      
+      mwfac$procregav[elecproc$funcproc != "No elec" & mwfac$V173A == "Process inside facility only"] <- 1
+      mwfac$procregav[elecproc$funcproc == "No elec" & mwfac$V173A == "Process inside facility only"] <- 0
+      
+      table(mwfac$procregav, energycatframe3$encate3)      
+      # c1 = 3 !
+      
+      # reg
+      regframeproctec1 <- data.frame(mwfac$procregav, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframeproctec1, function(x) sum(is.na(x))) # n.a. proctec1=264; encate3=88 ("don´t know if connected")
+      sapply(regframeproctec1, function(x) length(unique(x)))
+      
+      # Missing values
+      regframeproctec1 <- na.omit(regframeproctec1)
+      
+      #reg
+      modelproctec1 <- glm(mwfac.procregav~.,family=binomial(link='logit'),data=regframeproctec1)
+      modelproctec1table <- summary(modelproctec1)
+      
+      # OR
+      Oddsratio <- exp(coef(modelproctec1))
+      
+      # Add to table ??? (also CI ?)
+      cmodelproctec1table <- cbind(modelproctec1table, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelproctec1)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelproctec1, test="Chisq") 
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelproctec1)
+      
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframeproctec1, modelproctec1, predabil, 793)
+      
+      
+      library(stargazer) 
+      stargazer(modelproctec, modelproctec1, type = "html",
+                dep.var.labels=c("Electr. processing technology functional (=1)", "Electr. processing technology available (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="Proctech.htm")
+      
+      
+      
+      
+      
+      
+      ### Medical Waste disposal technology
+      table(mwfac$V186A)
+      table(mwfac$V186A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Incinerator functionality (medical waste and sharps disposal)
+      table(mwfac$V189, energycatframe3$encate3, facilitycatwho$facilitycategory)  
+      
+      # Medical waste site
+      table(mwfac$V187)
+      
+      # Sharps disposal technology
+      table(mwfac$V184A)
+      
+      # Sharps Waste site - visible waste    
+      table(mwfac$V185)
+      table(mwfac$V185, energycatframe3$encate3)
+      
+      
+###  HVAC: Medication room well ventilated (ANTIBIOTICS & GENERAL MEDICINES)
+      table(mwfac$V928D)
+      table(mwfac$V928D, energycatframe3$encate3, facilitycatwho$facilitycategory)      
+
+  ### Regression: 1: "well ventilated", 0: "not well ventilated"
+      mwfac$ventil[mwfac$V928D == "Yes"] <- 1
+      mwfac$ventil[mwfac$V928D == "No"] <- 0
+      
+      table(mwfac$V928D, energycatframe3$encate3)      
+      # c1 = 3 !
+      
+      # reg
+      regframevent <- data.frame(mwfac$ventil, facilitycatwho$facilitycategory, energycatframe3$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)
+      sapply(regframevent, function(x) sum(is.na(x))) # n.a. venti=96; encate3=88 ("don´t know if connected")
+      sapply(regframevent, function(x) length(unique(x)))
+      
+      # Missing values
+      regframevent <- na.omit(regframevent)
+      
+      #reg
+      modelvent <- glm(mwfac.ventil~.,family=binomial(link='logit'),data=regframevent)
+      modelventtable <- summary(modelvent)
+      
+      # OR
+      Oddsratio <- exp(coef(modelvent))
+      
+      # Add to table ??? (also CI ?)
+      cmodelintertable <- cbind(modelventtable, "OR" = Oddsratio)
+      
+      
+      # Multicollinearity (5< should be excluded)
+      install.packages("car")
+      library(car)
+      vif(modelvent)
+      
+      # Kann	das	angenommene	Regressionsmodell	mehr	als	das	Null-Modell	erklären?	
+      # likelihood ratio test: difference between the null deviance and the residual deviance: shows how the model is doing against the null model (the wider the gap the better)
+      anova(modelvent, test="Chisq") 
+      
+      # "Wie	viel	Varianz	kann	durch	das	Regressionsmodell	aufgeklärt	werden?"	
+      # Model fit:  McFadden, Cox and Snell and Nagelkerke: 0.2: ok, 0.4: good 
+      install.packages("rcompanion")
+      library(rcompanion)
+      nagelkerke(modelvent)
+      
+      # "Wie	hoch	ist	die	Übereinstimmung	der	empirisch	beobachteten	Werte	und	der	vorhergesagten	Wahrscheinlichkeiten?"	
+      # Predictive ability: Necessary, as we know that model not good fit?
+      # cross validation
+      install.packages("boot")
+      library(boot)
+      
+      # delta 1: runs 972 times = biased estimate of true; second: correction for the true error
+      predabil <- function(r, pi = 0) mean(abs(r-pi) > 0.5)
+      cv.glm(regframevent, modelvent, predabil, 959)
+      
+      
+      library(stargazer) 
+      stargazer(modelvent, type = "html",
+                dep.var.labels=c("Medication storage room for general medication and antibiotics  well ventilated (=1)"),
+                covariate.labels=c("First Level (ref.: Community Level)", "Referral Level (ref.: Community Level)", 
+                                   "Interrupt. grid, w/ back-up (Ref.: Uninterrupt. grid w/ back-up)", "Uninterrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Interrupt. grid, w/o back-up (Ref.: Uninterrupt. grid w/ back-up)", "Off-grid (Ref.: Uninterrupt. grid w/ back-up)", "No electricity source (Ref.: Uninterrupt. grid w/ back-up)", 
+                                   "Christian Health Association of Malawi (CHAM) (Ref.: Government)", "Private for profit (Ref.: Government)", "Mission/Faith-based (other than CHAM) (Ref.: Government)", "NGO (Ref.: Government)", "Company (Ref.: Government)", 
+                                   "Central region (Ref.: Northern region)", "Southern region (Ref.: Northern region)",
+                                   "Rural facility (Ref.: Urban facility)"), out="HVAC_Medroom.htm")
+      
+      
+
+### ENERGY USES INTERAGENCY LIST / DEVICES
+
+    # Blood typing
+    table(mwfac$V034A)
+    # Anti-A
+    table(mwfac$V860A)
+    # Anti-B
+    table(mwfac$V860B)
+    # Anti-D
+    table(mwfac$V860D)
+    
+    
+    # Glucometer (Batteries)
+    table(mwfac$V850B)
+    # Unexpired
+    table(mwfac$V850B1)
+    
+    # HIV testing and counseling
+    table(mwfac$V042)
+    
+    # HIV care and support services 
+    table(mwfac$V046)
+    table(mwfac$V1515)
+    
+    # HIV RDT
+    table(mwfac$VT807)
+    
+    # Lab test
+    table(mwfac$VT808)
+    
+    # Syphillis RDT
+    table(mwfac$V840E1)
+    # Any other test (?) 
+    table(mwfac$V840E2)
+    # Serology
+    table(mwfac$VT829)  
+    # TPHA
+    table(mwfac$V847E)
+    
+    # Scale (unclear if electronic) - Basic equipment!
+    #Adult
+    table(mwfac$V166A)
+    # Child
+    table(mwfac$V166B)
+    # Infant
+    table(mwfac$V166C)
+
+    # (Electron Microscope of facilities which offer diagn. services, av. and used)
+    table(mwfac$V841A2)
+    # Working order
+    table(mwfac$V842A2)  
+    
+    # Ultrasound
+    # Performs diagnostic X-rays, ultrasound or computerized tomography  
+    table(mwfac$V863)
+    # Ultrasound available
+    table(mwfac$V864C)
+    # Working order ultrasound
+    table(mwfac$V865C)
+    
+    # Thermometer (battery)
+    # General OPD
+    table(mwfac$V166E) 
+    # Sick child exam
+    table(mwfac$V265D)
+    # Other equipment
+    table(mwfac$V533I)
+    
+    # Automatic Timer
+    # Child sick
+    table(mwfac$V265E)
+    
+    # X-Ray
+    # Performs diagnostic X-rays, ultrasound or computerized tomography  
+    table(mwfac$V863)
+    # Digital, not requiring film
+    table(mwfac$V864F)
+    # Available
+    table(mwfac$V864A)
+    # Unexpired film
+    table(mwfac$V864B)
+    # Working order: not requiring film
+    table(mwfac$V865F)
+    # Working order (requiring film)
+    table(mwfac$V865A)
+    
+    # Pulse oxymeter
+    # General OPD, available and functioning 
+    table(mwfac$V166N)
+    
+    # Suction (ENERGY?)
+    # Newborn with catheter
+    # available
+    table(mwfac$V536F)
+    # routinely used
+    table(mwfac$V507A)
+    
+    # Oxygen concentrator: general OPD
+    table(mwfac$V166O)
+    # Country specific
+    table(mwfac$V533K)
+    
+    table(mwfac$V536C)
+    
+    
+     
+      # Malaria Acridine Orange (AO) Microscope, av. and used 
+      table(mwfac$V852D)
+      
+      # Centrifuge
+      # Av., used 
+      table(mwfac$V841G) 
+      # Working order
+      table(mwfac$V842G)
+      
+      # Colorimeter
+      # av., used
+      table(mwfac$V845C)
+      # Working order
+      table(mwfac$V846C)
+      
+      # ELISA/EIA Test items av.
+      # Scanner, av. used
+      table(mwfac$V843A)
+      # Working order scanner/reader
+      table(mwfac$V844A)
+      # Washer for ELISA  
+      table(mwfac$V843H)
+      # Working order
+      table(mwfac$V844H)
+      
+      # Hemocue
+      # av., used
+      table(mwfac$V845B)
+      # working order
+      table(mwfac$V846B)
+      
+      #Blood sent outside of the facility for HIV testing
+      table(mwfac$V820Y) #213 not sent outside
+      
+      # Incubator for HIV testing ?? = EIA/ELISA?
+      table(mwfac$VT805)
+      
+      # Laminar Airflow cabinet (biosafety hood)
+      # Av., used
+      table(mwfac$V859H) 
+      
+      # (Micro)nebulizor (general OPD)
+      table(mwfac$V166L) 
+      
+      
+      # Rotator, Shaker
+      table(mwfac$VT806)
+      
+      # Syphillis rotator/shaker
+      # av., used
+      table(mwfac$V847B)
+      # working order
+      table(mwfac$V848B)
+      
+      
+      # Automatic timer
+      table(mwfac$V177F)
+      
+      # rtn newborn bath within hours/min
+      table(mwfac$V507C)
+      
+      # Cytometer
+      # av., used
+      table(mwfac$V843B)
+      # working order
+      table(mwfac$V844B)
+      
+  # Lighting
+      # General OPD area
+      table(mwfac$V166I)
+      # Routine delivery
+      table(mwfac$V533B) 
+      # ANC
+      table(mwfac$V433I)
+      # NC diseases
+      table(mwfac$V1608I) 
+      # FP
+      table(mwfac$V333E)
+      
+      
+      # lighting ANC: functioning vs. not functioning/dk if functioning (incl. observed and reported) #643
+      
+      notavanc <- as.numeric(mwfac$V433I == "Not available")
+      obsfuncanc <- as.numeric(mwfac$V433I == "Observed, functioning")
+      obsnotfuncanc <- as.numeric(mwfac$V433I == "Observed, not/DK if functioning")
+      repfuncanc <- as.numeric(mwfac$V433I == "Reported functioning") 
+      repnotfuncanc <- as.numeric(mwfac$V433I == "Reported, not/DK  if functioning")
+      
+      lightcatframeanc <- data.frame(notavanc, obsfuncanc, obsnotfuncanc, repfuncanc, repnotfuncanc)
+      
+      lightcatframeanc$licateanc[lightcatframeanc$obsfuncanc == 1 | lightcatframeanc$repfuncanc == 1 ] <- 0
+      lightcatframeanc$licateanc[lightcatframeanc$obsnotfuncanc == 1 | lightcatframeanc$repnotfuncanc == 1 | lightcatframeanc$notavanc == 1] <- 1
+      
+      table(lightcatframeanc$licateanc, energycatframe3$encate3, facilitycatwho$facilitycategory, mwfac$V014A)
+      table(mwfac$V433I, energycatframe3$encate3)
+      
+      # available vs. not available
+      table(notavanc==1, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(notavanc==1, energycatframe3$encate3, mwfac$V007)
+      
+      
+      
+      
+      # Package export excel
+      install.packages("rJava")
+      install.packages("xlsxjars")
+      install.packages("xlsx")
+      library(rJava)
+      library(xlsxjars)
+      library(xlsx)
+      
+      save.xlsx <- function (file, ...)
+      {
+        require(xlsx, quietly = TRUE)
+        objects <- list(...)
+        fargs <- as.list(match.call(expand.dots = TRUE))
+        objnames <- as.character(fargs)[-c(1, 2)]
+        nobjects <- length(objects)
+        for (i in 1:nobjects) {
+          if (i == 1)
+            write.xlsx(objects[[i]], file, sheetName = objnames[i])
+          else write.xlsx(objects[[i]], file, sheetName = objnames[i],
+                          append = TRUE)
+        }
+        print(paste("Workbook", file, "has", nobjects, "worksheets."))
+      }
+      
+      c1<-c(1,2,3)
+      c2<-c(4,5,6)
+      c3<-c(7,8,9)
+      t1<-table(c1,c2,c3)
+      
+      tab1<-as.data.frame.matrix(t1[,,1])  # 1 = categories
+      tab2<-as.data.frame.matrix(t1[,,2])
+      tab3<-as.data.frame.matrix(t1[,,3])
+      
+      save.xlsx("test.xlsx", tab1, tab2, tab3)
+
+                 
+                 enli <- data.frame(en,li)
+                 prop.table(table(lightcatframe$licatopdfunc, energycatframe2$encate2))
+                 install.packages("ggplot2")
+                 library(ggplot2)
+                 ggplot(test, aes(x = en)) + geom_bar(aes(fill = li)) + 
+                   theme(axis.text.x=element_text(angle = -45, hjust = 0))
+                 x11()
+
+  # Autoclave for FP (family planning)
+      
+      table(mwfac$V343A)  
+      table(mwfac$V193WA)
+      # Place where equipment is processed for reuse (FP)
+      table(mwfac$V342)
+      
+
+      
+################ Outputs/outcomes
+      
+# LIGHTING OP: 
+  # Routine inpatient care or overnight in all facilities
+      table(mwfac$licatopdav, mwfac$V142, facilitycatwho$facilitycategory)
+      
+      table(mwfac$V142) 
+      table(mwfac$V142, energycatframe3$encate3, facilitycatwho$facilitycategory, lightcatframe$licatopdfunc) 
+      
+      # summarize inpatient and overnight
+      mwfac$inpatorovern[mwfac$V142 == "Overnight observation - no routine inpatient" | mwfac$V142 == "Yes"] <- 1
+      mwfac$inpatorovern[mwfac$V142 == "No"] <- 0
+      
+          # Reg (energy use on outpatient)
+          table(mwfac$inpatorovern, energycatframe3$encate3)
+          regframeoutp <- data.frame(energycatframe3$encate3, lightcatframe$licatopdfunc, mwfac$inpatorovern, facilitycatwho$facilitycategory, mwfac$V008,  mwfac$V001, mwfac$V003)
+    
+          sapply(regframeoutp, function(x) sum(is.na(x))) # n.a. inpat=83; encate3=88 ("don´t know if connected")
+          sapply(regframeoutp, function(x) length(unique(x)))
+          
+          regframeoutp <- na.omit(regframeoutp)
+          
+          modeloutp <- glm(mwfac.inpatorovern~.,family=binomial(link='logit'),data=regframeoutp)
+          summary(modeloutp)
+    
+          # Multicollinearity (5< should be excluded)
+          install.packages("car")
+          library(car)
+          vif(modeloutp)
+      
+      
+
+
+  # staff 24 hours in facility or on call in all facilities, duty schedule observed  
+      table(mwfac$V101A, energycatframe3$encate3)
+      table(mwfac$V101A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      mwfac$hours24overall[mwfac$V101A != "No 24 hour staff"] <- 1
+      mwfac$hours24overall[mwfac$V101A == "No 24 hour staff"] <- 0
+      
+        # Reg (energy use on 24hours staff)
+        table(mwfac$hours24overall, energycatframe3$encate3)
+        regframe24hoursov <- data.frame(mwfac$hours24overall, lightcatframe$licatopdfunc, mwfac$inpatorovern, facilitycatwho$facilitycategory, mwfac$V008,  mwfac$V001, mwfac$V003)
+        
+        sapply(regframe24hoursov, function(x) sum(is.na(x))) # n.a. =83; encate3=88 ("don´t know if connected")
+        sapply(regframe24hoursov, function(x) length(unique(x)))
+        
+        regframe24hoursov <- na.omit(regframe24hoursov)
+        
+        model24hoursov <- glm(mwfac.hours24overall~.,family=binomial(link='logit'),data=regframe24hoursov)
+        summary(model24hoursov)
+        
+        # Multicollinearity (5< should be excluded)
+        install.packages("car")
+        library(car)
+        vif(model24hoursov)
+      
+  # Nr of outpatient visits
+      # No of client outpatient visits (All facilities incl.)
+      table(mwfac$V134)
+      table(!is.na(mwfac$V134))
+      
+     
+      summary(mwfac$V134[facilitycatwho$facilitycategory == "Referral"])
+      summary(mwfac$V134[facilitycatwho$facilitycategory == "First"])
+      summary(mwfac$V134[facilitycatwho$facilitycategory == "Community"])
+      
+      summary(mwfac[which(mwfac$facilitycategory == "Referral"), "V134"])
+      comoutp <- mwfac$V134[facilitycatwho$facilitycategory == "Community"]
+      
+      outpn <- mwfac$V134
+      outpn1 <- mwfac$V134[facilitycatwho$facilitycategory == "First"]
+      outpn2 <- mwfac$V134[facilitycatwho$facilitycategory == "Community"]
+      
+      max(comoutp, na.rm=TRUE)
+      
+      # 99998 is recoded from SPSS = "I don´t know"
+      # n=113 "I don´t know"
+      
+      # Test if significant effect of missings
+      mwfac$missnoutp[mwfac$V134 == 99998] <-1
+      mwfac$missnoutp[mwfac$V134 != 99998] <-0
+      modelmissnoutp <- glm(missnoutp~ facilitycategory + encate3,family=binomial(link='logit'),data=mwfac)
+      summary(modelmissnoutp)
+     
+
+      hist(mwfac$missnoutp)
+      
+      # Regframe
+      # Func
+      regframenoutp <- data.frame(mwfac$V102T, mwfac$V134, mwfac$encate3, mwfac$licatopdfunc, mwfac$facilitycategory, mwfac$V008,  mwfac$V001, mwfac$V003)  
+      # Av
+      regframenoutp1 <- data.frame(mwfac$V102T, mwfac$V134, mwfac$licatopdav, mwfac$facilitycategory, mwfac$encate3, mwfac$V008,  mwfac$V001, mwfac$V003)  
+      
+      
+      # delete missings
+      regframenoutp <- na.omit(regframenoutp)
+      regframenoutp1 <- na.omit(regframenoutp1)
+      regframenoutp <- regframenoutp[regframenoutp$mwfac.V134 != 99998,]
+      regframenoutp1 <- regframenoutp1[regframenoutp1$mwfac.V134 != 99998,]
+      
+      hist(regframenoutp$mwfac.V134)
+      hist(regframenoutp1$mwfac.V134)
+      boxplot(regframenoutp$mwfac.V134, main="Outpatient visits")    # SKEWED!
+      
+      # run OLS
+      modeloutpno <- lm(mwfac.V134~.,data=regframenoutp)
+      summary(modeloutpno)
+      
+      modeloutpno1 <- lm(mwfac.V134~.,data=regframenoutp1)
+      summary(modeloutpno1)
+      
+      # Model diagnostics
+     
+      # Vif
+      vif(modeloutpno)
+      # Residual plot
+      plot(modeloutpno, which=1)
+      # QQ plot
+      plot(modeloutpno,2)
+
+  ### LIGHTING DELIVERY 24 hour staff 
+      # staff 24 hours in facility or on call in facilities which offer routine delivery
+      table(mwfac$V502, energycatframe3$encate3) # n=540
+      table(mwfac$V502, facilitycatwho$facilitycategory) # all NOs on first level
+      # 536/4
+      
+      # schedule of 24 hours staffing (delivery) - Proxy        
+      table(mwfac$V503, energycatframe3$encate3)
+      table(mwfac$V503, energycatframe3$encate3, facilitycatwho$facilitycategory) #n=532 (536 offer delivery services)
+      
+        # "No schedule/no schedule observed" vs. "schedule observed"
+        mwfac$del24schedobs[mwfac$V503 == "Schedule observed"] <- 1  
+        mwfac$del24schedobs[mwfac$V503 != "Schedule observed"] <- 0  
+        
+        
+        # "No schedule" vs "schedule (observed and reported)"
+        mwfac$del24schedav[mwfac$V503 != "No schedule"] <- 1  
+        mwfac$del24schedav[mwfac$V503 == "No schedule"] <- 0  
+        
+      
+### No of live discharges (if inpatient services are offered: V142 -> n=246) 
+      # mit median? summary(mwfac$V135[facilitycatwho$Firstlevel == 1])
+      table(mwfac$V135)
+      
+      # Number of personnel
+      # Total full time
+      table(mwfac$V102T)
+      # Types
+      table(mwfac$V102A.01)
+      
+      summary(mwfac$V135[facilitycatwho$facilitycategory == "Referral"])
+      summary(mwfac$V135[facilitycatwho$facilitycategory == "First"])
+      summary(mwfac$V135[facilitycatwho$facilitycategory == "Community"])
+      
+      
+      lidisn <- mwfac$V135[facilitycatwho$facilitycategory == "Referral"]
+      lidisn1 <- mwfac$V135[facilitycatwho$facilitycategory == "First"]
+      lidisn2 <- mwfac$V135[facilitycatwho$facilitycategory == "Community"]
+      
+      boxplot(lidisn, lidisn1, lidisn2,data=outpn, main="Live discharges")
+      
+### Provider number of deliveries last 6 months
+      # merge fac and prov 
+      mwfacprov <- merge(mwprov, mwfac, by="INV_ID")
+      
+      
+      # Provides delivery
+      table(mwprov$W121F)
+      
+      # No of deliveries last 6 months
+      table(mwprov$W135)
+      
+      # Fac offers routine delivery
+      table(mwfac$V015A)
+      # Caesarian delivery    
+      table(mwfac$V015C)
+      
+      
+      
+      
+      
+            
+      
+      # Merge datasets
+      energycatframe3$INV_ID <- mwfac$INV_ID 
+      comframe$INV_ID <- mwfac$INV_ID
+      facilitycatwho$INV_ID <- mwfac$INV_ID
+      lightcatframedel$INV_ID <- mwfac$INV_ID
+      lightcatframe$INV_ID <- mwfac$INV_ID
+      
+      mwfac <- merge(energycatframe3, mwfac, by="INV_ID")
+      mwfac <- merge(comframe, mwfac, by="INV_ID")                                  
+      mwfac <- merge(lightcatframedel, mwfac, by="INV_ID")
+      mwfac <- merge(lightcatframe, mwfac, by="INV_ID")
+      mwfac <- merge(facilitycatwho, mwfac, by="INV_ID")
+      
+
+      
+## Variables for ggplots
+      # Inpatient/outpatient (all facilities included)
+        # yes, no, overnight: mwfac$V142
+        # yes (overnight/inpatient), no: mwfac$inpatorovern
+      # lighting (av.not av. /func. not func):
+        # av. na: mwfac$licatopdav
+        # func not func: mwfac$licatopdfunc
+      # energy categories: 
+        # mwfac$encate3
+      inpatientplot <- data.frame(mwfac$V142, mwfac$facilitycategory, mwfac$V142)
+      table(mwfac$V142, mwfac$facilitycategory, mwfac$licatopdfunc)
+      ggplot(inpatientplot, main = "inpatient") 
+             
+             aes(x = en)) + geom_bar(aes(fill = li)) + 
+        theme(axis.text.x=element_text(angle = -45, hjust = 0))
+      x11()
+      
+      
+    
+      
+      
+      
+      
+      
+      
+      
+      
+      # Services offered  
+      
+      # ANC care: yes, no
+      table(mwfac$V014A) # Yes: 643  
+      table(mwfac$V014A, energycatframe3$encate3, mwfac$V007)
+      table(mwfac$V014A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      
+      # Any FP: yes, no        
+      table(mwfac$VT301, mwfac$V007)  
+      
+      # Fac. offers minor surgeries
+      table(mwfac$V049, facilitycatwho$facilitycategory)
+      
+      # Routine delivery, yes, no
+      table(mwfac$V015A, energycatframe3$encate3, facilitycatwho$facilitycategory)
+      table(mwfac$V015A)
+      # Caesarian delivery    
+      table(mwfac$V015C)
+      
+      
+      # Laboratory diagnostic services (including any rapid dx testing in lab)
+      table(mwfac$V034)
+      
+      # Blood typing services (require refrig)
+      table(mwfac$V034A)
+      
+      # Services PMTCT
+      table(mwfac$V1260)
+
+      
+## CLIENT AN EXIT INTERVIEW            
+      mwanclex <- read.spss("MWAN6IFLSR.SAV", to.data.frame = T) #JAKE?
+      dim(mwanclex)  
+      # 2105, 235
+      
+      # Planned place of child delivery
+      table(mwanclex$C177)
+      
+## STAFF   
+      mwprov <- read.spss("MWPV6IFLSR.SAV", to.data.frame = T) #JAKE?
+      dim(mwprov)  
+      # 2735, 246
+ 
+      
+      mwsl <- read.spss("MWSL6IFLSR.SAV", to.data.frame = T) #JAKE?
+      dim(mwsl)  
+      # 4661, 22
+      
+      # Year started working in fac.
+      table(mwprov$W106)
+      
+      # Received vaccination as part of service
+      table(mwprov$W170)
+      
+      # average working Hours per week 
+      table(mwprov$W108)
+      
+      # Non-monetary incentives (any)
+      table(mwprov$W117) 
+      
+      # What provider likes to see improved
+      # 1st
+      table(mwprov$W172A)
+      # 2nd
+      table(mwprov$W172B)
+      # 3rd
+      table(mwprov$W172C)
+      
+      # SICK CHILD OBSERVATION  
+      
+      # Child brought to fac. before because of same sickness  
+      table(mwprov$C257) 
+      
+      # Correlations
+      cor(onlysolar[mwfac$V007], mwfac$V134[mwfac$V007], use = "complete.obs")
+      cor(onlysolar, mwfac$V134, use = "complete.obs")
+      
+      cor(reliable[mwfac$V007], mwfac$V135[mwfac$V007], use = "complete.obs")
+      
+      
+      table(mwfac$LV224)
+      
