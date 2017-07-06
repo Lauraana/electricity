@@ -1,4 +1,4 @@
-# RECODE AS NUMERIC
+# A RECODE AS NUMERIC
 # Total staff number
 mwfac$V102T
 
@@ -6,7 +6,7 @@ mwfac$V102T
 mwfac$V134
 
 
-# MULTINOMIAL REGRESSION
+# B MULTINOMIAL REGRESSION
 # Vaccine refrigeration
       refap <- as.numeric(mwfac$LV222A == "Between +2 and +8 degrees")  
       refinap <- as.numeric(mwfac$LV222A == "Above +8 degrees" | mwfac$LV222A == "Below +2 degrees")
