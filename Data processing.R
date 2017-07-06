@@ -1,13 +1,44 @@
-# A RECODE AS NUMERIC
-# Total staff number
-mwfac$V102T
 
-# Total outpatient visits in the last full month
-mwfac$V134
+# Variables:
+
+# Energy Categories 
+      # connected (without don´t know)
+        connected <- (mwfac$V120A !=  "Don't know if connected")
+        table(connected)
+
+      # solar(only)
+        solar <- as.character(mwfac$V121A == "No" & mwfac$V121B == "No" & mwfac$V121C == "Yes" & mwfac$V121D =="No")
+        table(solar, mwfac$V120A)
+
+        # 1: Reliable,  back-up
+        mwfac$encate3[mwfac$V120A == "Connected, always available" & mwfac$V120 != "No backup generator"] <- "c1" 
+
+        # 2: Sometimes interrupted, back-up
+        mwfac$encate3[mwfac$V120A == "Connected, sometimes interrupted" & mwfac$V120 != "No backup generator"] <- "c2"
 
 
-# B MULTINOMIAL REGRESSION
-# Vaccine refrigeration
+        # 3: Reliable, no back-up
+        mwfac$encate3[mwfac$V120A == "Connected, always available" & mwfac$V120 == "No backup generator"] <- "c3"
+
+
+        # 4: Sometimes interrupted, no back-up
+        mwfac$encate3[mwfac$V120A == "Connected, sometimes interrupted" & mwfac$V120 == "No backup generator"] <- "c4"
+
+        # 5: Not connected, off-grid
+        mwfac$encate3[mwfac$V120A =="Not connected" & solar == "TRUE" | mwfac$V120A =="Not connected" & (mwfac$V120 == "Reported functional with fuel" | mwfac$V120 == "Reported functional, no fuel, DK fuel" | mwfac$V120 == "Reported not functional" | mwfac$V120 == "Reported, don't know if functional")] <- "c5"
+
+        # 6: Not connected to electricity  
+        mwfac$encate3[mwfac$V120A =="Not connected" & mwfac$V120 == "No backup generator" & solar == "FALSE"] <- "c6"
+
+# Facility levels
+        mwfac$facilitycategory[mwfac$V007 == "District Hospital" | mwfac$V007 == "Central Hospital"] <- "Referral"
+        # First
+        mwfac$facilitycategory[mwfac$V007 == "Rural/Community Hospital" | mwfac$V007 == "Other Hospital" | mwfac$V007 == "Health Centre"] <- "First"
+        # Community
+        mwfac$facilitycategory[mwfac$V007 == "Maternity" | mwfac$V007 == "Dispensary" | mwfac$V007 == "Clinic" | mwfac$V007 == "Health Post"] <- "Community"
+
+
+# Refrigeration
       refap <- as.numeric(mwfac$LV222A == "Between +2 and +8 degrees")  
       refinap <- as.numeric(mwfac$LV222A == "Above +8 degrees" | mwfac$LV222A == "Below +2 degrees")
       reftnf <- as.numeric(mwfac$LV222A == "Thermometer not functional")
@@ -22,7 +53,35 @@ mwfac$V134
       
       refrvac1$INV_ID <- mwfac$INV_ID
       mwfac <- merge(refrvac1, mwfac, by="INV_ID")
- 
+# Lighting
+      notav <- as.numeric(mwfac$V166I == "Not available" & mwfac$V010B == "Outpatient")
+      obsfunc <- as.numeric(mwfac$V166I == "Observed, functioning" & mwfac$V010B == "Outpatient")
+      obsnotfunc <- as.numeric(mwfac$V166I == "Observed, not/DK if functioning" & mwfac$V010B == "Outpatient")
+      repfunc <- as.numeric(mwfac$V166I == "Reported functioning" & mwfac$V010B == "Outpatient") 
+      repnotfunc <- as.numeric(mwfac$V166I == "Reported, not/DK  if functioning" & mwfac$V010B == "Outpatient")
+      
+      lightcatframe <- data.frame(notav, obsfunc, obsnotfunc, repfunc, repnotfunc)
+      
+      lightcatframe$licatopdfunc[lightcatframe$obsfunc == 1 | lightcatframe$repfunc == 1 ] <- 1
+      lightcatframe$licatopdfunc[lightcatframe$obsnotfunc == 1 | lightcatframe$repnotfunc == 1 | lightcatframe$notav == 1] <- 0
+      
+      lightcatframe$INV_ID <- mwfac$INV_ID
+      mwfac <- merge(lightcatframe, mwfac, by="INV_ID")
+
+# 24h staff
+      mwfac$hours24overall[mwfac$V101A != "No 24 hour staff"] <- 1
+      mwfac$hours24overall[mwfac$V101A == "No 24 hour staff"] <- 0
+################################################################################################################
+# A RECODE AS NUMERIC
+# Total staff number
+mwfac$V102T
+
+# Total outpatient visits in the last full month
+mwfac$V134
+
+
+# B MULTINOMIAL REGRESSION
+# Vaccine refrigeration
       table(mwfac$refr2, mwfac$encate3)
       
       regframerefr2 <- data.frame(mwfac$refr2, mwfac$facilitycategory, mwfac$encate3, mwfac$V008, mwfac$V003, mwfac$V001)
